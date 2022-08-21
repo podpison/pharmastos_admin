@@ -1,6 +1,6 @@
 import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useInsertionEffect, useState } from 'react';
-import { Create, Datagrid, Edit, EditButton, useRefresh, List, SaveButton, SimpleForm, TextField, TextInput, Toolbar, useDataProvider, useNotify, useRecordContext, useRedirect, useUpdate, useUpdateMany } from 'react-admin';
+import { Create, Datagrid, Edit, EditButton, useRefresh, List, SaveButton, SimpleForm, TextField, TextInput, Toolbar, useDataProvider, useNotify, useRecordContext, useRedirect, useUpdate, useUpdateMany, ArrayField } from 'react-admin';
 import { FieldValues } from 'react-hook-form';
 import { TextField as MuiTextField, Button as MuiButton } from '@mui/material';
 import { BlogItemType, fs, getDocument, updateDocument, createDocument } from '../../api/api';
@@ -37,12 +37,17 @@ const useSubmit = (collection: string, type: 'update' | 'create') => {
 export const BlogEdit: React.FC = (props) => {
   const onSubmit = useSubmit('blog', 'update');
   const [newFields, setNewFields] = useState<string[]>([]);
-  const [newItemName, setNewItemName] = useState('');
+  let [currentBlog, setCurretBlog] = useState<undefined | BlogItemType>(undefined);
+  useEffect(() => {
+    getDocument('blog').then(v => setCurretBlog(v as BlogItemType));
+  }, []);
+  // const [newItemName, setNewItemName] = useState('');
 
-  const addNewField = () => {
-    setNewFields(p => [...p, newItemName]);
-    setNewItemName('');
-  };
+  // const addNewField = () => {
+  //   setNewFields(p => [...p, newItemName]);
+  //   setNewItemName('');
+  // };
+
 
   return <Edit {...props} className='edit'>
     <SimpleForm onSubmit={onSubmit}>
@@ -54,9 +59,9 @@ export const BlogEdit: React.FC = (props) => {
       <TextInput fullWidth source="img" />
       <TextInput fullWidth multiline source="imgDescription.ru" />
       <TextInput fullWidth multiline source="imgDescription.ua" />
-      {/* <ContentItemFields /> */}
-      <MuiTextField placeholder='New field name (english)' value={newItemName} onChange={e => setNewItemName(e.target.value)} />
-      <MuiButton sx={{mt: 2}} variant='outlined' onClick={addNewField}>Add new field</MuiButton>
+      <ContentItemFields currentBlog={currentBlog} setCurretBlog={setCurretBlog} />
+      {/* <MuiTextField placeholder='New field name (english)' value={newItemName} onChange={e => setNewItemName(e.target.value)} />
+      {/* <MuiButton sx={{mt: 2}} variant='outlined' onClick={addNewField}>Add new field</MuiButton> */}
     </SimpleForm>
   </Edit>
 };

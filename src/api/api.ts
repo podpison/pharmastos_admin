@@ -18,7 +18,7 @@ export const fs = getFirestore(app);
 
 export const firebaseDataProvider = FirebaseDataProvider(firebaseConfig, {});
 
-type BlogItemContentItem = {
+export type BlogItemContentItemType = {
   name: string
   text: {
     ru: (string | { array: string[] })[]
@@ -32,7 +32,7 @@ export type BlogItemType = {
   img: string
   imgDescription: string
   content: {
-    [key: string]: BlogItemContentItem
+    [key: string]: BlogItemContentItemType
   }
 }
 
